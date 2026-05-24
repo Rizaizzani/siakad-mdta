@@ -25,7 +25,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { key: 'dashboard',   label: 'Dashboard',       icon: LayoutDashboard, group: 'Utama',     roles: ['admin', 'guru'] },
-  { key: 'siswa',       label: 'Data Siswa',       icon: Users,           group: 'Akademik',  roles: ['admin'] },
+  { key: 'siswa',       label: 'Data Siswa',       icon: Users,           group: 'Akademik',  roles: ['admin', 'guru'] },
   { key: 'absen',       label: 'Input Absensi',    icon: ClipboardCheck,  group: 'Akademik',  roles: ['admin', 'guru'] },
   { key: 'rekap-absen', label: 'Rekap Absensi',    icon: ClipboardList,   group: 'Akademik',  roles: ['admin', 'guru'] },
   { key: 'nilai',       label: 'Input Penilaian',  icon: GraduationCap,   group: 'Penilaian', roles: ['admin', 'guru'] },
@@ -69,9 +69,7 @@ export default function MainLayout() {
     : 'U';
 
   const roleLabel = user?.role === 'admin' ? 'Administrator' : 'Guru';
-  const roleBadgeColor = user?.role === 'admin'
-    ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-    : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
+  const roleBadgeColor = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden">
