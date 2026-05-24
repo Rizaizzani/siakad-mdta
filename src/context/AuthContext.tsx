@@ -7,7 +7,7 @@ import {
   onAuthStateChanged,
   User,
 } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 
 export type UserRole = 'admin' | 'guru' | 'user';
@@ -44,7 +44,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             docData = snap.data();
           } else if (firebaseUser.email) {
             // Fallback cerdas: cari berdasarkan field email di seluruh koleksi users
-            const { collection, query, where, getDocs } = require('firebase/firestore');
             const q = query(collection(db, 'users'), where('email', '==', firebaseUser.email));
             const querySnap = await getDocs(q);
             if (!querySnap.empty) {
