@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Search, Plus, Edit2, Trash2, X, User, Phone, MapPin, ChevronDown } from 'lucide-react';
 import { useAppContext } from '@/context/AppContext';
+
 import { Siswa, StatusSiswa } from '@/types';
 import { KELAS_LIST } from '@/data/mockData';
 
@@ -28,6 +29,7 @@ export default function DataSiswaView() {
     const matchKelas = filterKelas === 'Semua' || s.kelas === filterKelas;
     return matchSearch && matchStatus && matchKelas;
   });
+
 
   const openModal = (s?: Siswa) => {
     if (s) {

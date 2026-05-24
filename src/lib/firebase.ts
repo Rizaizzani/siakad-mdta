@@ -9,12 +9,14 @@ import { getFirestore } from 'firebase/firestore';
 // Cara mendapatkan: https://console.firebase.google.com
 // → Project Settings → Your apps → Web app → SDK setup and configuration
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  apiKey: "AIzaSyDBZfAyA9ANLdHVcHOBh-EmNm5LBSfPbiM",
+  authDomain: "siakad-mdta.firebaseapp.com",
+  databaseURL: "https://siakad-mdta-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "siakad-mdta",
+  storageBucket: "siakad-mdta.firebasestorage.app",
+  messagingSenderId: "811971385904",
+  appId: "1:811971385904:web:1dd68c4a5ab2789d276bf5",
+  measurementId: "G-TFQ773HDER"
 };
 
 // Mencegah inisialisasi duplikat saat hot reload (Next.js dev mode)
