@@ -3,8 +3,9 @@
 import React, { useState } from 'react';
 import {
   LayoutDashboard, Users, ClipboardCheck, ClipboardList,
-  GraduationCap, FileBarChart2, Menu, X, ChevronRight,
+  GraduationCap, FileBarChart2, Menu, X, ChevronRight, LogOut,
 } from 'lucide-react';
+import { useAuth, UserRole } from '@/context/AuthContext';
 import DashboardView from '../views/DashboardView';
 import DataSiswaView from '../views/DataSiswaView';
 import AbsensiView from '../views/AbsensiView';
@@ -19,38 +20,58 @@ interface NavItem {
   label: string;
   icon: React.ElementType;
   group: string;
+  roles: UserRole[]; // role yang boleh akses
 }
 
 const navItems: NavItem[] = [
-  { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, group: 'Utama' },
-  { key: 'siswa', label: 'Data Siswa', icon: Users, group: 'Akademik' },
-  { key: 'absen', label: 'Input Absensi', icon: ClipboardCheck, group: 'Akademik' },
-  { key: 'rekap-absen', label: 'Rekap Absensi', icon: ClipboardList, group: 'Akademik' },
-  { key: 'nilai', label: 'Input Penilaian', icon: GraduationCap, group: 'Penilaian' },
-  { key: 'rekap-nilai', label: 'Rekap Penilaian', icon: FileBarChart2, group: 'Penilaian' },
+  { key: 'dashboard',   label: 'Dashboard',       icon: LayoutDashboard, group: 'Utama',     roles: ['admin', 'guru'] },
+  { key: 'siswa',       label: 'Data Siswa',       icon: Users,           group: 'Akademik',  roles: ['admin'] },
+  { key: 'absen',       label: 'Input Absensi',    icon: ClipboardCheck,  group: 'Akademik',  roles: ['admin', 'guru'] },
+  { key: 'rekap-absen', label: 'Rekap Absensi',    icon: ClipboardList,   group: 'Akademik',  roles: ['admin', 'guru'] },
+  { key: 'nilai',       label: 'Input Penilaian',  icon: GraduationCap,   group: 'Penilaian', roles: ['admin', 'guru'] },
+  { key: 'rekap-nilai', label: 'Rekap Penilaian',  icon: FileBarChart2,   group: 'Penilaian', roles: ['admin', 'guru'] },
 ];
 
 const renderView = (view: ViewKey) => {
   switch (view) {
-    case 'dashboard': return <DashboardView />;
-    case 'siswa': return <DataSiswaView />;
-    case 'absen': return <AbsensiView />;
+    case 'dashboard':   return <DashboardView />;
+    case 'siswa':       return <DataSiswaView />;
+    case 'absen':       return <AbsensiView />;
     case 'rekap-absen': return <RekapAbsensiView />;
-    case 'nilai': return <PenilaianView />;
+    case 'nilai':       return <PenilaianView />;
     case 'rekap-nilai': return <RekapPenilaianView />;
   }
 };
 
 export default function MainLayout() {
+  const { user, logout } = useAuth();
   const [currentView, setCurrentView] = useState<ViewKey>('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
-  const groups = [...new Set(navItems.map(n => n.group))];
+  // Filter nav berdasarkan role user
+  const visibleNav = navItems.filter(n => user && n.roles.includes(user.role));
+  const groups = [...new Set(visibleNav.map(n => n.group))];
 
   const handleNav = (key: ViewKey) => {
     setCurrentView(key);
     setSidebarOpen(false);
   };
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    await logout();
+  };
+
+  // Inisial nama untuk avatar
+  const initials = user?.nama
+    ? user.nama.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
+    : 'U';
+
+  const roleLabel = user?.role === 'admin' ? 'Administrator' : 'Guru';
+  const roleBadgeColor = user?.role === 'admin'
+    ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+    : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden">
@@ -77,13 +98,28 @@ export default function MainLayout() {
           </button>
         </div>
 
+        {/* User info di sidebar */}
+        <div className="px-4 py-3.5 border-b border-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-emerald-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+              {initials}
+            </div>
+            <div className="min-w-0">
+              <p className="text-slate-200 text-sm font-medium truncate">{user?.nama}</p>
+              <span className={`inline-block text-[10px] font-semibold px-1.5 py-0.5 rounded border ${roleBadgeColor} mt-0.5`}>
+                {roleLabel}
+              </span>
+            </div>
+          </div>
+        </div>
+
         {/* Nav */}
         <nav className="flex-1 p-3 space-y-5 overflow-y-auto">
           {groups.map(group => (
             <div key={group}>
               <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest px-3 mb-1.5">{group}</p>
               <div className="space-y-0.5">
-                {navItems.filter(n => n.group === group).map(item => {
+                {visibleNav.filter(n => n.group === group).map(item => {
                   const active = currentView === item.key;
                   return (
                     <button
@@ -102,11 +138,19 @@ export default function MainLayout() {
           ))}
         </nav>
 
-        {/* Footer */}
-        <div className="p-4 border-t border-slate-800">
-          <div className="bg-slate-800 rounded-xl p-3">
-            <p className="text-slate-400 text-xs">Prototype v1.0</p>
-            <p className="text-slate-500 text-[10px] mt-0.5">© 2025 MDTA Safinatussalam</p>
+        {/* Footer + Logout */}
+        <div className="p-4 border-t border-slate-800 space-y-2">
+          <button
+            id="btn-logout"
+            onClick={handleLogout}
+            disabled={loggingOut}
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:bg-rose-500/10 hover:text-rose-400 transition-all disabled:opacity-50"
+          >
+            <LogOut size={16} />
+            {loggingOut ? 'Keluar...' : 'Keluar'}
+          </button>
+          <div className="bg-slate-800 rounded-xl px-3 py-2">
+            <p className="text-slate-500 text-[10px]">© 2026 MDTA Safinatussalam</p>
           </div>
         </div>
       </aside>
@@ -120,19 +164,19 @@ export default function MainLayout() {
           </button>
           <div>
             <h2 className="text-sm font-semibold text-slate-800">
-              {navItems.find(n => n.key === currentView)?.label}
+              {visibleNav.find(n => n.key === currentView)?.label}
             </h2>
             <p className="text-xs text-slate-400 hidden sm:block">
-              {navItems.find(n => n.key === currentView)?.group} › {navItems.find(n => n.key === currentView)?.label}
+              {visibleNav.find(n => n.key === currentView)?.group} › {visibleNav.find(n => n.key === currentView)?.label}
             </p>
           </div>
           <div className="ml-auto flex items-center gap-3">
             <div className="text-right hidden sm:block">
-              <p className="text-xs font-semibold text-slate-700">Admin</p>
-              <p className="text-[10px] text-slate-400">Administrator</p>
+              <p className="text-xs font-semibold text-slate-700">{user?.nama}</p>
+              <p className="text-[10px] text-slate-400">{roleLabel}</p>
             </div>
             <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-bold">
-              A
+              {initials}
             </div>
           </div>
         </header>

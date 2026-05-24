@@ -4,6 +4,7 @@
 
 import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
 // ⚠️ PENTING: Ganti dengan konfigurasi dari Firebase Console Anda
 // Cara mendapatkan: https://console.firebase.google.com
@@ -24,3 +25,6 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0
 
 // Firestore Database
 export const db = getFirestore(app);
+
+// Firebase Auth
+export const auth = getAuth(app);
