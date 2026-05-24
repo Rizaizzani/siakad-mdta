@@ -1,0 +1,60 @@
+type User @table {
+  username: String!
+  passwordHash: String!
+  role: String!
+  createdAt: Timestamp!
+  displayName: String
+  email: String
+  phoneNumber: String
+  address: String
+}
+
+type Student @table {
+  firstName: String!
+  lastName: String!
+  dateOfBirth: Date!
+  enrollmentDate: Date!
+  studentId: String!
+  gender: String
+  address: String
+  phoneNumber: String
+  parentUser: User
+}
+
+type Subject @table {
+  name: String!
+  code: String!
+  description: String
+}
+
+type Class @table {
+  name: String!
+  academicYear: String!
+  description: String
+  subject: Subject
+  teacher: User
+}
+
+type Enrollment @table(key: ["student", "class"]) {
+  student: Student!
+  class: Class!
+  enrollmentDate: Date!
+}
+
+type Attendance @table {
+  date: Date!
+  status: String!
+  notes: String
+  student: Student
+  class: Class
+}
+
+type Grade @table {
+  gradeType: String!
+  score: Float!
+  dateRecorded: Timestamp!
+  notes: String
+  student: Student
+  subject: Subject
+  teacher: User
+}
