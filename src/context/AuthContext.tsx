@@ -43,7 +43,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               uid: firebaseUser.uid,
               email: firebaseUser.email ?? '',
               nama: data.nama ?? 'Pengguna',
-              role: data.role ?? 'guru',
+              role: data.role ?? 'user',
             });
           } else {
             // Fallback jika dokumen user belum ada di Firestore
@@ -51,7 +51,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               uid: firebaseUser.uid,
               email: firebaseUser.email ?? '',
               nama: firebaseUser.email?.split('@')[0] ?? 'Pengguna',
-              role: 'guru',
+              role: 'user',
             });
           }
         } catch {
