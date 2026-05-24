@@ -3,6 +3,7 @@
 import { useAuth } from '@/context/AuthContext';
 import LoginView from '@/components/views/LoginView';
 import MainLayout from '@/components/layout/MainLayout';
+import UserLayout from '@/components/user/UserLayout';
 import { GraduationCap } from 'lucide-react';
 
 export default function Home() {
@@ -26,6 +27,10 @@ export default function Home() {
   // Belum login → tampilkan halaman login
   if (!user) return <LoginView />;
 
-  // Sudah login → tampilkan aplikasi utama
+  // Sudah login → tampilkan aplikasi utama berdasarkan role
+  if (user.role === 'user') {
+    return <UserLayout />;
+  }
+
   return <MainLayout />;
 }

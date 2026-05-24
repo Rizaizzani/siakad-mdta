@@ -47,7 +47,6 @@ export default function LoginView() {
         {/* Card */}
         <div className="bg-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-7 shadow-2xl">
           <h2 className="text-lg font-semibold text-white mb-1">Masuk ke Akun</h2>
-          <p className="text-slate-400 text-sm mb-6">Gunakan akun yang telah diberikan admin</p>
 
           {/* Error */}
           {error && (
@@ -72,7 +71,7 @@ export default function LoginView() {
                   autoComplete="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  placeholder="contoh@email.com"
+                  placeholder="Email"
                   className="w-full bg-slate-700/60 border border-slate-600/50 text-white placeholder-slate-500 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                 />
               </div>
