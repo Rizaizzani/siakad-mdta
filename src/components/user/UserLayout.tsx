@@ -6,10 +6,10 @@ import {
   FileBarChart2, Menu, X, ChevronRight, LogOut, GraduationCap
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import UserDashboardView from './UserDashboardView';
-import UserSiswaView from './UserSiswaView';
-import UserAbsensiView from './UserAbsensiView';
-import UserPenilaianView from './UserPenilaianView';
+import UserDashboardView from '@/components/user/UserDashboardView';
+import UserSiswaView from '@/components/user/UserSiswaView';
+import UserAbsensiView from '@/components/user/UserAbsensiView';
+import UserPenilaianView from '@/components/user/UserPenilaianView';
 
 type UserViewKey = 'dashboard' | 'siswa' | 'rekap-absen' | 'rekap-nilai';
 
