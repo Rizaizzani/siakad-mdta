@@ -50,7 +50,8 @@ export default function MainLayout() {
   const [loggingOut, setLoggingOut] = useState(false);
 
   // Filter nav berdasarkan role user
-  const visibleNav = navItems.filter(n => user && n.roles.includes(user.role));
+  const normalizedRole = (user?.role || '').trim().toLowerCase();
+  const visibleNav = navItems.filter(n => user && n.roles.includes(normalizedRole as any));
   const groups = [...new Set(visibleNav.map(n => n.group))];
 
   const handleNav = (key: ViewKey) => {
@@ -68,7 +69,7 @@ export default function MainLayout() {
     ? user.nama.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
     : 'U';
 
-  const roleLabel = user?.role === 'admin' ? 'Administrator' : 'Guru';
+  const roleLabel = normalizedRole === 'admin' ? 'Administrator' : 'Guru';
   const roleBadgeColor = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
 
   return (

@@ -28,7 +28,8 @@ export default function Home() {
   if (!user) return <LoginView />;
 
   // Sudah login → tampilkan aplikasi utama berdasarkan role
-  if (user.role === 'user') {
+  const role = user.role.trim().toLowerCase();
+  if (role === 'user') {
     return <UserLayout />;
   }
 
