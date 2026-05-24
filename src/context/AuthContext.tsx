@@ -36,17 +36,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: User | null) => {
       if (firebaseUser) {
         try {
-          const snap = await getDoc(doc(db, 'users', firebaseUser.uid));
+          let docData: any = null;
+          const uidRef = doc(db, 'users', firebaseUser.uid);
+          const snap = await getDoc(uidRef);
+
           if (snap.exists()) {
-            const data = snap.data();
+            docData = snap.data();
+          } else if (firebaseUser.email) {
+            // Fallback cerdas: cari berdasarkan field email di seluruh koleksi users
+            const { collection, query, where, getDocs } = require('firebase/firestore');
+            const q = query(collection(db, 'users'), where('email', '==', firebaseUser.email));
+            const querySnap = await getDocs(q);
+            if (!querySnap.empty) {
+              docData = querySnap.docs[0].data();
+            }
+          }
+
+          if (docData) {
             setUser({
               uid: firebaseUser.uid,
               email: firebaseUser.email ?? '',
-              nama: data.nama ?? 'Pengguna',
-              role: data.role ?? 'user',
+              nama: docData.nama ?? 'Pengguna',
+              role: docData.role ?? 'user',
             });
           } else {
-            // Fallback jika dokumen user belum ada di Firestore
+            // Fallback jika dokumen user sama sekali tidak ada di Firestore
             setUser({
               uid: firebaseUser.uid,
               email: firebaseUser.email ?? '',
