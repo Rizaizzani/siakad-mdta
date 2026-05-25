@@ -13,7 +13,6 @@ const COLORS = ['#10b981', '#f59e0b', '#3b82f6', '#ef4444'];
 
 export default function DashboardView() {
   const { siswa, absensi, penilaian } = useAppContext();
-
   const totalAktif = siswa.filter(s => s.status === 'Aktif').length;
   const totalNonAktif = siswa.filter(s => s.status === 'Non-Aktif').length;
   const absensiHariIni = absensi.filter(a => a.tanggal === today);
@@ -126,7 +125,7 @@ export default function DashboardView() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
           <h3 className="font-semibold text-slate-800 mb-4">Distribusi Siswa per Kelas</h3>
-          <ResponsiveContainer width="100%" height={160}>
+          <ResponsiveContainer width="100%" height={220}>
             <BarChart data={siswaPerKelas} layout="vertical" barSize={14}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
               <XAxis type="number" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
@@ -142,8 +141,8 @@ export default function DashboardView() {
             {[
               ['Nama Lembaga', 'MDTA Safinatussalam'],
               ['Total Siswa', `${siswa.length} Siswa`],
-              ['Total Kelas', '4 Kelas'],
-              ['Mata Pelajaran', '5 Mapel'],
+              ['Total Kelas', '6 Kelas'],
+              ['Mata Pelajaran', '7 Mapel'],
             ].map(([label, val]) => (
               <div key={label}>
                 <p className="opacity-70 text-xs">{label}</p>
@@ -152,7 +151,7 @@ export default function DashboardView() {
             ))}
             <div className="pt-2 border-t border-white/20">
               <p className="opacity-70 text-xs">Sistem</p>
-              <p className="font-semibold text-xs">SIAKAD Prototype v1.0</p>
+              <p className="font-semibold text-xs">SIAKAD MDTA Safinatussalam</p>
             </div>
           </div>
         </div>

@@ -24,12 +24,12 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { key: 'dashboard',   label: 'Dashboard',       icon: LayoutDashboard, group: 'Utama',     roles: ['admin', 'guru'] },
-  { key: 'siswa',       label: 'Data Siswa',       icon: Users,           group: 'Akademik',  roles: ['admin', 'guru'] },
-  { key: 'absen',       label: 'Input Absensi',    icon: ClipboardCheck,  group: 'Akademik',  roles: ['admin', 'guru'] },
-  { key: 'rekap-absen', label: 'Rekap Absensi',    icon: ClipboardList,   group: 'Akademik',  roles: ['admin', 'guru'] },
-  { key: 'nilai',       label: 'Input Penilaian',  icon: GraduationCap,   group: 'Penilaian', roles: ['admin', 'guru'] },
-  { key: 'rekap-nilai', label: 'Rekap Penilaian',  icon: FileBarChart2,   group: 'Penilaian', roles: ['admin', 'guru'] },
+  { key: 'dashboard',   label: 'Dashboard',       icon: LayoutDashboard, group: 'Utama',     roles: ['admin', 'user'] },
+  { key: 'siswa',       label: 'Data Siswa',       icon: Users,           group: 'Akademik',  roles: ['admin'] },
+  { key: 'absen',       label: 'Input Absensi',    icon: ClipboardCheck,  group: 'Akademik',  roles: ['admin'] },
+  { key: 'rekap-absen', label: 'Rekap Absensi',    icon: ClipboardList,   group: 'Akademik',  roles: ['admin'] },
+  { key: 'nilai',       label: 'Input Penilaian',  icon: GraduationCap,   group: 'Penilaian', roles: ['admin'] },
+  { key: 'rekap-nilai', label: 'Rekap Penilaian',  icon: FileBarChart2,   group: 'Penilaian', roles: ['admin'] },
 ];
 
 const renderView = (view: ViewKey) => {
@@ -69,8 +69,10 @@ export default function MainLayout() {
     ? user.nama.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
     : 'U';
 
-  const roleLabel = normalizedRole === 'admin' ? 'Administrator' : 'Guru';
-  const roleBadgeColor = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
+  const roleLabel = normalizedRole === 'admin' ? 'Administrator' : 'Pengguna';
+  const roleBadgeColor = normalizedRole === 'admin' 
+    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' 
+    : 'bg-blue-500/20 text-blue-300 border-blue-500/30';
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden">

@@ -10,13 +10,14 @@ import {
 import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 
-export type UserRole = 'admin' | 'guru' | 'user';
+export type UserRole = 'admin' | 'user';
 
 interface AuthUser {
   uid: string;
   email: string;
   nama: string;
   role: UserRole;
+  isFallback?: boolean;
 }
 
 interface AuthContextType {
@@ -51,12 +52,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
           }
 
+          let fallbackRole: UserRole = 'user';
+          if (firebaseUser.email?.toLowerCase().includes('admin')) {
+            fallbackRole = 'admin';
+          }
+
           if (docData) {
             setUser({
               uid: firebaseUser.uid,
               email: firebaseUser.email ?? '',
               nama: docData.nama ?? 'Pengguna',
-              role: docData.role ?? 'user',
+              role: docData.role ?? fallbackRole,
             });
           } else {
             // Fallback jika dokumen user sama sekali tidak ada di Firestore
@@ -64,7 +70,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               uid: firebaseUser.uid,
               email: firebaseUser.email ?? '',
               nama: firebaseUser.email?.split('@')[0] ?? 'Pengguna',
-              role: 'user',
+              role: fallbackRole,
             });
           }
         } catch {
