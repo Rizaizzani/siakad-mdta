@@ -12,7 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="id">
       <head>
-        <meta name="google-site-verification" content="c0bd9b18d463d0dd" />
+        <meta name="google-site-verification" content="fNAIFykDeWspEOXGJt_ldEllveL-wbTqeE-A9XdTHWs" />
       </head>
       <body className="antialiased">
         <AuthProvider>
