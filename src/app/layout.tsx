@@ -3,9 +3,10 @@ import { AppProvider } from '@/context/AppContext';
 import { AuthProvider } from '@/context/AuthContext';
 import './globals.css';
 
-export const metadata: Metadata = {
-  title: 'SIAKAD - MDTA Safinatussalam',
-  description: 'Sistem Informasi Akademik MDTA Safinatussalam',
+export const metadata = {
+  title: 'SIAKAD MDTA Safinatussalam',
+  description: 'Sistem informasi akademik berbasis web',
+  keywords: ['siakad', 'mdta', 'safinatussalam'],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
