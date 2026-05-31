@@ -13,6 +13,8 @@ export default function PenilaianView() {
   const [semester, setSemester] = useState(SEMESTER_LIST[0]);
   const [formNilai, setFormNilai] = useState<Record<string, { tugas: string; ujian: string }>>({});
   const [saved, setSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const siswaDiKelas = useMemo(
     () => siswa.filter(s => s.kelas === kelas && s.status === 'Aktif'),
@@ -32,6 +34,7 @@ export default function PenilaianView() {
     });
     setFormNilai(init);
     setSaved(false);
+    setError(null);
   }, [kelas, mapel, semester, siswaDiKelas, penilaian]);
 
   const computeAkhir = (tugas: string, ujian: string) => {
@@ -40,21 +43,31 @@ export default function PenilaianView() {
     return Math.round(t * 0.4 + u * 0.6);
   };
 
-  const handleSimpan = () => {
-    const dataToSave: Omit<Penilaian, 'id'>[] = siswaDiKelas.map(s => {
-      const f = formNilai[s.id] || { tugas: '0', ujian: '0' };
-      const nilaiTugas = parseFloat(f.tugas) || 0;
-      const nilaiUjian = parseFloat(f.ujian) || 0;
-      return {
-        siswaId: s.id, kelas, mapel, semester,
-        nilaiTugas, nilaiUjian,
-        nilaiAkhir: Math.round(nilaiTugas * 0.4 + nilaiUjian * 0.6),
-        tanggal: today,
-      };
-    });
-    savePenilaianBatch(dataToSave);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+  const handleSimpan = async () => {
+    setIsSaving(true);
+    setError(null);
+    setSaved(false);
+    try {
+      const dataToSave: Omit<Penilaian, 'id'>[] = siswaDiKelas.map(s => {
+        const f = formNilai[s.id] || { tugas: '0', ujian: '0' };
+        const nilaiTugas = parseFloat(f.tugas) || 0;
+        const nilaiUjian = parseFloat(f.ujian) || 0;
+        return {
+          siswaId: s.id, kelas, mapel, semester,
+          nilaiTugas, nilaiUjian,
+          nilaiAkhir: Math.round(nilaiTugas * 0.4 + nilaiUjian * 0.6),
+          tanggal: today,
+        };
+      });
+      await savePenilaianBatch(dataToSave);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      console.error("Gagal menyimpan nilai ke Firestore:", err);
+      setError("Gagal menyimpan nilai. Silakan periksa koneksi internet atau konfigurasi Firebase.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const getNilaiColor = (val: number) => {
@@ -157,14 +170,31 @@ export default function PenilaianView() {
           </table>
         </div>
         {siswaDiKelas.length > 0 && (
-          <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-            {saved ? (
-              <span className="flex items-center gap-1.5 text-sm text-emerald-600 font-medium">
-                <CheckCircle size={16} /> Nilai berhasil disimpan!
-              </span>
-            ) : <span />}
-            <button onClick={handleSimpan} className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl flex items-center gap-2 text-sm font-medium transition-colors shadow-sm shadow-emerald-200">
-              <Save size={16} /> Simpan Nilai
+          <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between flex-wrap gap-2">
+            <div>
+              {isSaving && (
+                <span className="flex items-center gap-1.5 text-sm text-blue-600 font-medium animate-pulse">
+                  <span className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                  Sedang menyimpan nilai ke Firestore...
+                </span>
+              )}
+              {error && (
+                <span className="flex items-center gap-1.5 text-sm text-rose-600 font-medium">
+                  {error}
+                </span>
+              )}
+              {saved && !isSaving && !error && (
+                <span className="flex items-center gap-1.5 text-sm text-emerald-600 font-medium">
+                  <CheckCircle size={16} /> Nilai berhasil disimpan secara permanen!
+                </span>
+              )}
+            </div>
+            <button
+              onClick={handleSimpan}
+              disabled={isSaving}
+              className="bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white px-6 py-2.5 rounded-xl flex items-center gap-2 text-sm font-medium transition-colors shadow-sm shadow-emerald-200"
+            >
+              <Save size={16} /> {isSaving ? "Menyimpan..." : "Simpan Nilai"}
             </button>
           </div>
         )}

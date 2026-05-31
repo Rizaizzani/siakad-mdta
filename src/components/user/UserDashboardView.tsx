@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useAppContext } from '@/context/AppContext';
-import { today } from '@/data/mockData';
+import { today, getCurrentSemesterInfo } from '@/data/mockData';
 import { Users, CheckCircle2, BookOpen, Calendar, Award } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
@@ -80,7 +80,7 @@ export default function UserDashboardView() {
           {[
             ['Nama Lembaga', 'MDTA Safinatussalam'],
             ['Total Siswa', `${siswa.length} Orang`],
-            ['Tahun Ajaran', '2024/2025'],
+            ['Tahun Ajaran', getCurrentSemesterInfo().academicYear],
             ['Status Sistem', 'Online - Sinkronisasi Firestore'],
           ].map(([label, val]) => (
             <div key={label} className="bg-slate-50 p-4 rounded-xl">

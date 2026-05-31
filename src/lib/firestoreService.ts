@@ -136,7 +136,7 @@ export async function savePenilaianBatch(data: Omit<Penilaian, 'id'>[]): Promise
 
   for (const item of data) {
     // ID deterministik: siswaId_mapel_semester agar tidak duplikat
-    const docId = `${item.siswaId}_${item.mapel}_${item.semester}`.replace(/\s+/g, '_');
+    const docId = `${item.siswaId}_${item.mapel}_${item.semester}`.replace(/\s+/g, '_').replace(/\//g, '-');
     const ref = doc(db, COLLECTIONS.PENILAIAN, docId);
     batch.set(ref, { ...item, updatedAt: serverTimestamp() });
   }

@@ -19,9 +19,51 @@ export const MAPEL_LIST = [
   'Tarikh Islam'
 ];
 
-export const SEMESTER_LIST = ['Ganjil 2024/2025', 'Genap 2024/2025'];
-
 export const today = new Date().toISOString().split('T')[0];
+
+export function getCurrentSemesterInfo(date: Date = new Date()) {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  let sem: 'Ganjil' | 'Genap';
+  let academicYear: string;
+  
+  if (month >= 7 && month <= 12) {
+    sem = 'Ganjil';
+    academicYear = `${year}/${year + 1}`;
+  } else {
+    sem = 'Genap';
+    academicYear = `${year - 1}/${year}`;
+  }
+  
+  return {
+    semester: sem,
+    academicYear,
+    fullName: `${sem} ${academicYear}`,
+  };
+}
+
+export function getSemesterList(count: number = 6): string[] {
+  const list: string[] = [];
+  let year = new Date().getFullYear();
+  let month = new Date().getMonth() + 1;
+  let isGanjil = month >= 7 && month <= 12;
+  
+  for (let i = 0; i < count; i++) {
+    const semStr = isGanjil ? 'Ganjil' : 'Genap';
+    const yearStr = isGanjil ? `${year}/${year + 1}` : `${year - 1}/${year}`;
+    list.push(`${semStr} ${yearStr}`);
+    
+    if (isGanjil) {
+      isGanjil = false;
+    } else {
+      isGanjil = true;
+      year--;
+    }
+  }
+  return list;
+}
+
+export const SEMESTER_LIST = getSemesterList(6);
 
 export const initialSiswa: Siswa[] = [
   { id: '1', nis: '2023001', nama: 'Ahmad Fadlan', kelas: 'Kelas 1', jenisKelamin: 'Laki-laki', tanggalLahir: '2015-03-12', alamat: 'Jl. Mawar No. 1', namaOrtu: 'Bapak Fadlan', noHp: '08123456789', status: 'Aktif' },
@@ -71,7 +113,7 @@ export const generateSamplePenilaian = (): Penilaian[] => {
         siswaId: s.id,
         kelas: s.kelas,
         mapel,
-        semester: 'Ganjil 2024/2025',
+        semester: getCurrentSemesterInfo().fullName,
         nilaiTugas: tugas,
         nilaiUjian: ujian,
         nilaiAkhir: akhir,

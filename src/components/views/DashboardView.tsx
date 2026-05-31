@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useAppContext } from '@/context/AppContext';
-import { today, KELAS_LIST } from '@/data/mockData';
+import { today, KELAS_LIST, getCurrentSemesterInfo } from '@/data/mockData';
 import { Users, UserX, CheckCircle2, BookOpen, TrendingUp, BarChart3, Calendar } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -63,7 +63,7 @@ export default function DashboardView() {
           </p>
         </div>
         <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2 text-sm text-emerald-700 font-medium">
-          Semester Ganjil 2024/2025
+          Semester {getCurrentSemesterInfo().fullName}
         </div>
       </div>
 
